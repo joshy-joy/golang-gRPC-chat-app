@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option go_package = "./chat";
+
+package chat;
+
+service ChatService {
+  rpc Connect(User) returns (stream Message) {}
+  rpc CreateGroupChat(Channel) returns (Empty) {}
+  rpc JoinGroupChat(Channel) returns (Empty) {}
+  rpc LeftGroupChat(Channel) returns (Empty) {}
+  rpc SendMessage(Message) returns (Empty) {}
+  rpc ListChannels(User) returns (ChannelList) {}
+}
+
+message User {
+  string username = 1;
+}
+
+message Channel {
+  string name = 1;
+  User user = 2;
+}
+
+message ChannelList {
+  repeated Channel channel = 1;
+}
+
+message Message {
+  Channel channel = 1;
+  User user = 2;
+  string message = 3;
+}
+
+message Empty { }
