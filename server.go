@@ -47,7 +47,7 @@ func (s *Server) Connect(user *chat.User, stream chat.ChatService_ConnectServer)
 		err:    make(chan error),
 	}
 	s.Connection = append(s.Connection, conn)
-
+	fmt.Printf("%s connected to server\n", user.Username)
 	return <-conn.err
 }
 
@@ -71,6 +71,7 @@ func (s *Server) CreateGroupChat(ctx context.Context, channel *chat.Channel) (*c
 
 	// creating new channel map and adding user to the channel
 	s.channel[channel.Name] = []*chat.User{channel.User}
+	fmt.Printf("new group with name %s is created\n", channel.Name)
 	return &chat.Empty{}, nil
 }
 
@@ -93,6 +94,7 @@ func (s *Server) JoinGroupChat(ctx context.Context, channel *chat.Channel) (*cha
 		s.channel[channel.Name] = append(s.channel[channel.Name], channel.User)
 		return &chat.Empty{}, nil
 	}
+	fmt.Printf("%s joined to the channel %s\n", channel.User.Username, channel.Name)
 	return nil, channelNotFoundError
 }
 
@@ -120,6 +122,7 @@ func (s *Server) LeftGroupChat(ctx context.Context, channel *chat.Channel) (*cha
 		}
 		s.channel[channel.Name] = userList
 	}
+	fmt.Printf("%s left channel %s\n", channel.User.Username, channel.Name)
 	return nil, channelNotFoundError
 }
 
@@ -146,6 +149,7 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 
 	// check whether the message is a group message
 	if msg.Channel != nil {
+		fmt.Printf("%s send message to the group %s\n", msg.Sender.Username, msg.Channel.Name)
 		// getting user list in the group
 		users, ok := s.channel[msg.Channel.Name]
 		if !ok {
@@ -153,8 +157,6 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 			return nil, channelNotFoundError
 		}
 		for _, user := range users {
-			log.Println(user.Username)
-
 			// fetching connection object for each user
 			conn, err := getUserConnection(s.Connection, user.Username)
 			if err != nil || user.Username == msg.Sender.Username {
@@ -173,7 +175,7 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 					log.Printf("Sending message %s to user %s\n", msg.Message, conn.id)
 
 					if err != nil {
-						log.Printf("Error with stream %v. Error: %v", conn.stream, err)
+						log.Printf("Error with stream %v. Error: %v\n", conn.stream, err)
 						conn.active = false
 						conn.err <- err
 					}
@@ -181,7 +183,7 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 			}(msg, conn)
 		}
 	} else {
-		fmt.Println(s.Connection)
+		fmt.Printf("%s send message to user %s\n", msg.Sender.Username, msg.Receiver.Username)
 		// fetching connection object for each user
 		conn, err := getUserConnection(s.Connection, msg.Receiver.Username)
 		if err != nil {
@@ -194,7 +196,7 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 			log.Printf("Sending message %s to user %s\n", msg.Message, conn.id)
 
 			if err != nil {
-				log.Printf("Error with stream %v. Error: %v", conn.stream, err)
+				log.Printf("Error with stream %v. Error: %v\n", conn.stream, err)
 				conn.active = false
 				conn.err <- err
 				return nil, err

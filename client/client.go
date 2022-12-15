@@ -50,13 +50,13 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 	var streamError error
 	done := make(chan struct{})
 
-	fmt.Printf("\nconnecting user %s to server >>\n", *username)
+	fmt.Printf("\nconnecting user %s to server >>\n>>", *username)
 	stream, err := client.Connect(ctx, &chat.User{
 		Username: *username,
 	})
 
 	if err != nil {
-		return fmt.Errorf("connect failed: %v", err)
+		return fmt.Errorf("connect failed: %v\n>>", err)
 	}
 
 	wait.Add(1)
@@ -66,15 +66,16 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 		for {
 			msg, err := str.Recv()
 			if err != nil {
-				streamError = fmt.Errorf("ERROR:reading message>> %v", err)
+				streamError = fmt.Errorf("ERROR:reading message>> %v\n>>", err)
 				break
 			}
 			if msg.Channel != nil {
 				// print group message as [group-name] username: message
 				fmt.Printf("[%v] %v: %s\n", msg.Channel.Name, msg.Sender.Username, msg.Message)
+			} else {
+				// print direct message as username: message
+				fmt.Printf("%v: %s\n", msg.Sender.Username, msg.Message)
 			}
-			// print direct message as username: message
-			fmt.Printf("%v: %s\n", msg.Sender.Username, msg.Message)
 		}
 	}(stream)
 
@@ -100,7 +101,7 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 					leaveGroup(ctx, client, command[1])
 					//  check whether operation is to send direct message; send>Message
 				} else {
-					fmt.Println("Invalid command")
+					fmt.Println("Invalid command\n>>")
 				}
 				//  check whether operation is to send message
 			} else if len(command) == 3 {
@@ -115,7 +116,7 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 						command[2],
 						&chat.Channel{Name: strings.TrimSpace(command[1])})
 				} else {
-					fmt.Println("Invalid command")
+					fmt.Println("Invalid command\n>>")
 				}
 			}
 		}
@@ -138,7 +139,7 @@ func createGroup(ctx context.Context, client chat.ChatServiceClient, channelName
 	}
 	_, err := client.CreateGroupChat(ctx, &c)
 	if err != nil {
-		fmt.Printf("ERROR:creating group>> %v", err)
+		fmt.Printf("ERROR:creating group>> %v\n>>", err)
 	}
 }
 
@@ -149,7 +150,7 @@ func joinGroup(ctx context.Context, client chat.ChatServiceClient, channelName s
 	}
 	_, err := client.JoinGroupChat(ctx, &c)
 	if err != nil {
-		fmt.Printf("ERROR:joining group>> %v", err)
+		fmt.Printf("ERROR:joining group>> %v\n>>", err)
 	}
 }
 
@@ -160,7 +161,7 @@ func leaveGroup(ctx context.Context, client chat.ChatServiceClient, channelName 
 	}
 	_, err := client.LeftGroupChat(ctx, &c)
 	if err != nil {
-		fmt.Printf("ERROR:left group>> %v", err)
+		fmt.Printf("ERROR:left group>> %v\n>>", err)
 	}
 }
 
@@ -174,14 +175,14 @@ func sendMessage(ctx context.Context, client chat.ChatServiceClient, receiver, m
 	fmt.Println(*msg)
 	_, err := client.SendMessage(ctx, msg)
 	if err != nil {
-		fmt.Printf("ERROR:sending message>> %v", err)
+		fmt.Printf("ERROR:sending message>> %v\n>>", err)
 	}
 }
 
 func listChannels(ctx context.Context, client chat.ChatServiceClient) {
 	channelList, err := client.ListChannels(ctx, &chat.User{Username: strings.TrimSpace(*username)})
 	if err != nil {
-		fmt.Printf("ERROR:listing channels>> %v", err)
+		fmt.Printf("ERROR:listing channels>> %v\n>>", err)
 	}
 	for _, list := range channelList.Channel {
 		fmt.Printf("%s/%s", list.User.Username, list.Name)
