@@ -28,8 +28,9 @@ message ChannelList {
 
 message Message {
   Channel channel = 1;
-  User user = 2;
-  string message = 3;
+  User sender = 2;
+  User receiver = 3;
+  string message = 4;
 }
 
 message Empty { }

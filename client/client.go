@@ -71,10 +71,10 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 			}
 			if msg.Channel != nil {
 				// print group message as [group-name] username: message
-				fmt.Printf("[%v] %v: %s\n", msg.Channel.Name, msg.User.Username, msg.Message)
+				fmt.Printf("[%v] %v: %s\n", msg.Channel.Name, msg.Sender.Username, msg.Message)
 			}
 			// print direct message as username: message
-			fmt.Printf("%v: %s\n", msg.User.Username, msg.Message)
+			fmt.Printf("%v: %s\n", msg.Sender.Username, msg.Message)
 		}
 	}(stream)
 
@@ -106,10 +106,14 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 			} else if len(command) == 3 {
 				// send>user>message
 				if strings.TrimSpace(command[0]) == sendMessageOperation {
-					sendMessage(ctx, client, command[1], nil)
+					sendMessage(ctx, client, command[1], command[2], nil)
 					// broadcast>channel>message
 				} else if strings.TrimSpace(command[0]) == broadcastMessageOperation {
-					sendMessage(ctx, client, command[2], &chat.Channel{Name: strings.TrimSpace(command[1])})
+					sendMessage(ctx,
+						client,
+						command[1],
+						command[2],
+						&chat.Channel{Name: strings.TrimSpace(command[1])})
 				} else {
 					fmt.Println("Invalid command")
 				}
@@ -160,12 +164,14 @@ func leaveGroup(ctx context.Context, client chat.ChatServiceClient, channelName 
 	}
 }
 
-func sendMessage(ctx context.Context, client chat.ChatServiceClient, message string, channel *chat.Channel) {
+func sendMessage(ctx context.Context, client chat.ChatServiceClient, receiver, message string, channel *chat.Channel) {
 	msg := &chat.Message{
-		User:    &chat.User{Username: strings.TrimSpace(*username)},
-		Message: message,
-		Channel: channel,
+		Receiver: &chat.User{Username: strings.TrimSpace(receiver)},
+		Sender:   &chat.User{Username: strings.TrimSpace(*username)},
+		Message:  message,
+		Channel:  channel,
 	}
+	fmt.Println(*msg)
 	_, err := client.SendMessage(ctx, msg)
 	if err != nil {
 		fmt.Printf("ERROR:sending message>> %v", err)

@@ -157,7 +157,7 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 
 			// fetching connection object for each user
 			conn, err := getUserConnection(s.Connection, user.Username)
-			if err != nil {
+			if err != nil || user.Username == msg.Sender.Username {
 				// user connection not found in connection object. so we skip.
 				log.Println(err)
 				continue
@@ -181,8 +181,9 @@ func (s *Server) SendMessage(ctx context.Context, msg *chat.Message) (*chat.Empt
 			}(msg, conn)
 		}
 	} else {
+		fmt.Println(s.Connection)
 		// fetching connection object for each user
-		conn, err := getUserConnection(s.Connection, msg.User.Username)
+		conn, err := getUserConnection(s.Connection, msg.Receiver.Username)
 		if err != nil {
 			// user connection not found in connection object
 			log.Fatal(err)
