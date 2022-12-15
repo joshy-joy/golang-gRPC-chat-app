@@ -152,6 +152,7 @@ func joinGroup(ctx context.Context, client chat.ChatServiceClient, channelName s
 	if err != nil {
 		fmt.Printf("ERROR:joining group>> %v\n>>", err)
 	}
+	fmt.Println(">>")
 }
 
 func leaveGroup(ctx context.Context, client chat.ChatServiceClient, channelName string) {
@@ -163,6 +164,7 @@ func leaveGroup(ctx context.Context, client chat.ChatServiceClient, channelName 
 	if err != nil {
 		fmt.Printf("ERROR:left group>> %v\n>>", err)
 	}
+	fmt.Println(">>")
 }
 
 func sendMessage(ctx context.Context, client chat.ChatServiceClient, receiver, message string, channel *chat.Channel) {
@@ -176,6 +178,7 @@ func sendMessage(ctx context.Context, client chat.ChatServiceClient, receiver, m
 	if err != nil {
 		fmt.Printf("ERROR:sending message>> %v\n>>", err)
 	}
+	fmt.Println(">>")
 }
 
 func listChannels(ctx context.Context, client chat.ChatServiceClient) {
@@ -186,4 +189,5 @@ func listChannels(ctx context.Context, client chat.ChatServiceClient) {
 	for _, list := range channelList.Channel {
 		fmt.Printf("%s/%s", list.User.Username, list.Name)
 	}
+	fmt.Println(">>")
 }
