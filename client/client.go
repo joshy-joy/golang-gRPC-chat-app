@@ -29,13 +29,13 @@ const (
 func main() {
 	flag.Parse()
 
-	fmt.Println("--- CLIENT APP ---")
+	fmt.Print("--- CLIENT APP ---")
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithBlock(), grpc.WithInsecure())
 
 	conn, err := grpc.Dial(*tcpServer, opts...)
 	if err != nil {
-		log.Fatalf("Fail to dail: %v", err)
+		log.Fatalf("\nFail to dail: %v", err)
 	}
 
 	defer conn.Close()
@@ -43,16 +43,14 @@ func main() {
 	ctx := context.Background()
 	client := chat.NewChatServiceClient(conn)
 	wait := sync.WaitGroup{}
-
 	connect(ctx, client, wait)
-
 }
 
 func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitGroup) error {
 	var streamError error
 	done := make(chan struct{})
 
-	fmt.Printf("connecting user %s\n to server", username)
+	fmt.Printf("\nconnecting user %s to server >>\n", *username)
 	stream, err := client.Connect(ctx, &chat.User{
 		Username: *username,
 	})

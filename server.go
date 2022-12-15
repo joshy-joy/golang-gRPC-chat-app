@@ -34,8 +34,9 @@ func main() {
 		channel:    make(map[string][]*chat.User),
 		Connection: []*Connection{},
 	})
+	fmt.Println(">>>> SERVER STARTED!")
+	fmt.Println(">>>> Listening at port 5400")
 	grpcServer.Serve(lis)
-	fmt.Println("--- SERVER STARTED ---")
 }
 
 func (s *Server) Connect(user *chat.User, stream chat.ChatService_ConnectServer) error {
