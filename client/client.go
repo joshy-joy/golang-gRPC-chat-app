@@ -71,10 +71,10 @@ func connect(ctx context.Context, client chat.ChatServiceClient, wait sync.WaitG
 			}
 			if msg.Channel != nil {
 				// print group message as [group-name] username: message
-				fmt.Printf("[%v] %v: %s\n", msg.Channel.Name, msg.Sender.Username, msg.Message)
+				fmt.Printf("[%v] %v: %s\n>>", msg.Channel.Name, msg.Sender.Username, msg.Message)
 			} else {
 				// print direct message as username: message
-				fmt.Printf("%v: %s\n", msg.Sender.Username, msg.Message)
+				fmt.Printf("%v: %s\n>>", msg.Sender.Username, msg.Message)
 			}
 		}
 	}(stream)
@@ -172,7 +172,6 @@ func sendMessage(ctx context.Context, client chat.ChatServiceClient, receiver, m
 		Message:  message,
 		Channel:  channel,
 	}
-	fmt.Println(*msg)
 	_, err := client.SendMessage(ctx, msg)
 	if err != nil {
 		fmt.Printf("ERROR:sending message>> %v\n>>", err)
