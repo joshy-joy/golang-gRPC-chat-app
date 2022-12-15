@@ -59,3 +59,5 @@ send>John>Hi John
 
 broadcast>Bitcoin_channel>good morning
 ```
+
+walkthrough video for the application
