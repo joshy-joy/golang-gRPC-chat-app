@@ -61,3 +61,5 @@ broadcast>Bitcoin_channel>good morning
 ```
 
 walkthrough video for the application
+
+https://www.dropbox.com/s/km4byo7rrnqnvp8/chataapp.mov?dl=0
