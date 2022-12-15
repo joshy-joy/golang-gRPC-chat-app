@@ -1,0 +1,25 @@
+GOROOT=/usr/local/go #gosetup
+GOPATH=/Users/joshyjoy/go #gosetup
+/usr/local/go/bin/go build -o /private/var/folders/89/yppbq9yd7sdchksrngh9ns0m0000gn/T/GoLand/___go_build_chat_Service chat_Service #gosetup
+/private/var/folders/89/yppbq9yd7sdchksrngh9ns0m0000gn/T/GoLand/___go_build_chat_Service
+>>>> SERVER STARTED!
+>>>> Listening at port 5400
+joshy connected to server
+shervin connected to server
+vijay connected to server
+joshy send message to user shervin
+2022/12/15 13:12:58 Sending message Hi shervin to user shervin
+vijay send message to user joshy
+2022/12/15 13:13:14 Sending message Hi Joshy! to user joshy
+new group with name friends is created
+new group with name private is created
+shervin joined to the channel friends
+vijay joined to the channel private
+vijay send message to the group private
+2022/12/15 13:14:29 <nil>
+2022/12/15 13:14:29 Sending message  this is a private group to user joshy
+joshy send message to the group friends
+2022/12/15 13:14:51 <nil>
+2022/12/15 13:14:51 Sending message  Hi friends to user shervin
+shervin left channel friends
+joshy left channel private
