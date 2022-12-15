@@ -92,9 +92,9 @@ func (s *Server) JoinGroupChat(ctx context.Context, channel *chat.Channel) (*cha
 	if ok {
 		// adding user to the channel
 		s.channel[channel.Name] = append(s.channel[channel.Name], channel.User)
+		fmt.Printf("%s joined to the channel %s\n", channel.User.Username, channel.Name)
 		return &chat.Empty{}, nil
 	}
-	fmt.Printf("%s joined to the channel %s\n", channel.User.Username, channel.Name)
 	return nil, channelNotFoundError
 }
 
@@ -121,8 +121,9 @@ func (s *Server) LeftGroupChat(ctx context.Context, channel *chat.Channel) (*cha
 			}
 		}
 		s.channel[channel.Name] = userList
+		fmt.Printf("%s left channel %s\n", channel.User.Username, channel.Name)
+		return &chat.Empty{}, nil
 	}
-	fmt.Printf("%s left channel %s\n", channel.User.Username, channel.Name)
 	return nil, channelNotFoundError
 }
 
